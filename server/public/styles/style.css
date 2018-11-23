@@ -1,0 +1,68 @@
+* body {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+/* CARD CONTAINER */
+
+#card__container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap-reverse;
+}
+
+.card {
+  display: flex;
+  margin-top: 20px;
+  margin-left: 20px;
+  box-shadow: 0 5px 5px rgba(55, 55, 55, 0.5);
+  transition: box-shadow, background-color .2s linear;
+}
+
+.card:hover {
+  box-shadow: none;
+  background-color: #e9ecef;
+}
+
+@media only screen and (max-width: 600px) {
+  #card__container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card {
+    display: block;
+  }
+}
+
+/* ADD TASK CARD */
+.fa-plus-circle {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 5rem;
+  color: #ff002b;
+  cursor: pointer;
+  transition: all .2s linear;
+}
+
+.fa-plus-circle:hover {
+  color: #555555;
+  transform: scale(1.1);
+}
+
+.card-body--add {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.task__add-text {
+  color: #888888;
+}
+
+.form-control {
+  margin-bottom: 8px;
+}
