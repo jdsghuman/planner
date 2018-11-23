@@ -55,6 +55,15 @@ function getTasks() {
   $('#card__container').append(task);
   $('#card__container').append(task);
 
+  $.ajax({
+    method: 'GET',
+    url: '/tasks'
+  }).then(function(response) {
+    console.log('back from GET', response);
+  }).catch(function(err) {
+    console.log('error from GET', err);
+  })
+
 }
 
 function handleCancelClick() {

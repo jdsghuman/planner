@@ -1,4 +1,4 @@
-CREATE DATABASE "weekend-to-do-app";
+CREATE DATABASE "weekend_todo-app";
 
 CREATE TABLE "todolist" (
 	"id" SERIAL PRIMARY KEY,
@@ -7,5 +7,5 @@ CREATE TABLE "todolist" (
 	 "completed" BOOLEAN NOT NULL,
 );
 
-INSERT INTO todolist ("item", "completed") 
-VALUES ('Finish project', 'TRUE');
+INSERT INTO todolist ("task_title" "task_detail", "completed") 
+VALUES ('Finish project', "Add all the things" 'FALSE');
