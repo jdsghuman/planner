@@ -1,0 +1,27 @@
+{
+  "name": "vega-todo-app-weekend3",
+  "version": "1.0.0",
+  "description": "Hello Primers!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdsghuman/vega-todo-app-weekend3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdsghuman/vega-todo-app-weekend3/issues"
+  },
+  "homepage": "https://github.com/jdsghuman/vega-todo-app-weekend3#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jquery": "^3.3.1",
+    "pg": "^7.6.1"
+  }
+}
