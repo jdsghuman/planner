@@ -4,11 +4,9 @@
 }
 
 /* CARD CONTAINER */
-
 #card__container {
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap-reverse;
 }
 
 .card {
@@ -17,6 +15,7 @@
   margin-left: 20px;
   box-shadow: 0 5px 5px rgba(55, 55, 55, 0.5);
   transition: box-shadow, background-color .2s linear;
+  min-width: 212px;
 }
 
 .card:hover {
@@ -24,7 +23,16 @@
   background-color: #e9ecef;
 }
 
-@media only screen and (max-width: 600px) {
+.card-title {
+  display: inline-block;
+}
+
+.card-title--completed {
+  text-decoration: line-through;
+  color: #888888;
+}
+
+@media only screen and (max-width: 700px) {
   #card__container {
     flex-direction: column;
     align-items: center;
@@ -32,6 +40,9 @@
   
   .card {
     display: block;
+    margin-left: 0;
+    width: 18rem;
+    /* z-index: 75; */
   }
 }
 
@@ -41,7 +52,7 @@
   margin-top: 20px;
   margin-bottom: 20px;
   font-size: 5rem;
-  color: #ff002b;
+  color: #17a2b8;
   cursor: pointer;
   transition: all .2s linear;
 }
@@ -49,6 +60,11 @@
 .fa-plus-circle:hover {
   color: #555555;
   transform: scale(1.1);
+}
+
+.fa-square,
+.fa-check-square {
+  font-size: 1.25rem;
 }
 
 .card-body--add {
@@ -65,4 +81,28 @@
 
 .form-control {
   margin-bottom: 8px;
+}
+
+.btn {
+  margin-bottom: 5px;
+}
+
+.modalAdd {
+  position: fixed;
+  z-index: 55;
+  background-color: rgba(55, 55, 55, 0.8);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.2);
+  transition: all .3s ease-out;
+}
+
+.modalAdd--is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
 }

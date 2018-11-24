@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
   console.log('in GET route');
   const query = `SELECT * FROM "todolist";`;
   pool.query(query).then((results) => {
-    console.log(results.rows);
+    console.log('in GET route', results.rows);
     res.send(results.rows);
   }).catch((error) => {
     console.log('Error from GET', error);
