@@ -1,7 +1,9 @@
 $(document).ready(readyNow);
 
 function readyNow() {
+  // Load Add tasks button
   loadAddTask();
+  // Load tasks from the DB
   getTasks();
   $('#card__container').on('click', '.fa-plus-circle', createTask);
   $('#card__container').on('click', '#btn--cancel', handleCancelClick);
@@ -19,16 +21,6 @@ let addTaskCard = `
   </div>
 </div>`;
 
-// Task component
-let taskComponent = `
-  <div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-  </div>`;
-
   // New Task input component
   let newTaskInput = `
   <div class="card" style="width: 18rem; z-index: 155;">
@@ -43,7 +35,7 @@ let taskComponent = `
 
 function appendToDom(response) {
   // Loop through database
-  response.forEach(task => {
+  response.reverse().forEach(task => {
     // If task complete -- add checked box, else unchecked box
     let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
     // If task complete -- change styles
@@ -64,21 +56,14 @@ function appendToDom(response) {
 
 function createTask() {
   let modalAdd = $('.modalAdd');
-  console.log('add button clicked');
   $('#card__container').empty();
   // Show New Task Card
   $('#card__container').prepend(newTaskInput);
+  // Show modal styling
   modalAdd.addClass('modalAdd--is-visible');
-
 }
 
 function getTasks() {
-  console.log('getting tasks...');
-
-  //////// WIP /////////////////
-  // $('#card__container').append(taskComponent);
-  // $('#card__container').append(taskComponent);
-
   $.ajax({
     method: 'GET',
     url: '/tasks'
@@ -87,14 +72,13 @@ function getTasks() {
     appendToDom(response);
   }).catch(function(err) {
     console.log('error from GET', err);
-  })
-
+  });
 }
 
 function handleCancelClick() {
   let modalAdd = $('.modalAdd');
-  console.log('cancel clicked');
   $('#card__container').empty();
+  // Remove modal styling
   modalAdd.removeClass('modalAdd--is-visible');
   // Show Add Task button
   $('#card__container').prepend(addTaskCard);
