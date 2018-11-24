@@ -23,6 +23,17 @@ pool.on('error', (error) => {
   console.log('Error connecting to DB', error);
 });
 
+router.delete('/:id', (req, res) => {
+  const id = req.params.id;
+  console.log('id in server delete route: ', id);
+  pool.query(`DELETE FROM "todolist" WHERE id = $1;`, [id])
+    .then((response) => {
+      res.sendStatus(204);
+    }).catch((err) => {
+      console.log(err);
+    });
+});
+
 router.get('/', (req, res) => {
   console.log('in GET route');
   const query = `SELECT * FROM "todolist";`;

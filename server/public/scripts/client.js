@@ -68,18 +68,31 @@ function taskCard(task) {
   let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
   // If task complete -- change styles (strike-through, light colored text)
   let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
-  let button = task.completed ? `<a href="#" class="btn btn-info disabled">Complete</a>` : `<a href="#" class="btn btn-info">Complete</a>`;
+  let buttonComplete = task.completed ? `<a href="#" class="btn btn-info disabled btn--complete">Complete</a>` : `<a href="#" class="btn btn-info btn--complete">Complete</a>`;
   // Append task to the container
   $('#card__container').append(
     `<div class="card" style="width: 18rem;">
-    <div class="card-body">
+    <div class="card-body" data-id=${task.id}>
       ${square}
       ${title}
       <p class="card-text">${task.task_detail}</p>
-      <a href="#" class="btn btn-danger">Delete</a>
-      ${button}
+      <a href="#" class="btn btn-danger btn--delete">Delete</a>
+      ${buttonComplete}
     </div>
   </div>`);
+}
+
+function deleteTask(taskId) {
+  console.log('task data: ', taskId);
+  $.ajax({
+    method: 'DELETE',
+    url: `/tasks/${taskId}`
+  }).then(function(response) {
+    // Reset Modal and UI
+    resetUI();
+    // Update dom
+    getTasks();
+  });
 }
 
 function getTasks() {
@@ -99,6 +112,18 @@ function handleCancelClick() {
   resetUI();
   // Get tasks
   appendToDom(responses);   // Does not use getTasks method, saves extra network request to DB 
+}
+
+function handleDeleteClick() {
+  console.log('delete clicked');
+  // Get data-id of task
+  let taskId = $(this).parent().data('id');
+  // Prompt user to confirm delete
+  let deleteConfirm = confirm("Are you sure you want to delete this task?");
+  // If user confirms delete
+  if(deleteConfirm === true) {
+    deleteTask(taskId);
+  }
 }
 
 function handleSaveClick() {
@@ -147,6 +172,7 @@ function setupClickListeners() {
   $('#card__container').on('click', '.fa-plus-circle', createTask);
   $('#card__container').on('click', '#btn--cancel', handleCancelClick);
   $('#card__container').on('click', '#btn--save', handleSaveClick);
+  $('#card__container').on('click', '.btn--delete', handleDeleteClick);
 }
 
 class Task {
