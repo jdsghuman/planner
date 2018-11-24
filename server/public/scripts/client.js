@@ -34,24 +34,16 @@ let addTaskCard = `
   </div>`;
 
 function appendToDom(response) {
-  // Loop through database
-  response.reverse().forEach(task => {
-    // If task complete -- add checked box, else unchecked box
-    let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
-    // If task complete -- change styles
-    let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
-    // Append task to the container
-    $('#card__container').append(
-    `<div class="card" style="width: 18rem;">
-    <div class="card-body">
-      ${square}
-      ${title}
-      <p class="card-text">${task.task_detail}</p>
-      <a href="#" class="btn btn-danger">Delete</a>
-      <a href="#" class="btn btn-success">Complete</a>
-    </div>
-  </div>`)
-  });
+  // Loop through DB - filter incomplete tasks to be on top
+  response.reverse().filter(t => t.completed == false).forEach(task => {
+    // Display task card component
+    taskCard(task);
+  })
+  // Loop through DB - filter completed tasks
+  response.filter(t => t.completed == true).forEach(task => {
+    // Display task card component
+    taskCard(task);
+  })
 }
 
 function createTask() {
@@ -92,4 +84,22 @@ function handleSaveClick() {
 
 function loadAddTask() {
   $('#card__container').prepend(addTaskCard);
+}
+
+function taskCard(task) {
+  // If task complete -- add checked box, else unchecked box
+  let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
+  // If task complete -- change styles
+  let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
+  // Append task to the container
+  $('#card__container').append(
+  `<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    ${square}
+    ${title}
+    <p class="card-text">${task.task_detail}</p>
+    <a href="#" class="btn btn-danger">Delete</a>
+    <a href="#" class="btn btn-success">Complete</a>
+  </div>
+</div>`);
 }
