@@ -35,4 +35,18 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/', (req, res) => {
+  console.log('in POST route');
+  const newTask = req.body;
+  console.log('new Task in route: ', newTask);
+  const query = `INSERT INTO "todolist" ("task_title", "task_detail") VALUES($1, $2);`;
+  pool.query(query, [req.body.taskTitle, req.body.taskDetail])
+    .then(() => {
+      res.sendStatus(201);
+    }).catch((err) => {
+      console.log('Error in POST', err);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;

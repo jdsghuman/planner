@@ -3,36 +3,14 @@ $(document).ready(readyNow);
 function readyNow() {
   // Load Add tasks button
   loadAddTask();
-  // Load tasks from the DB
+  // Get tasks from the DB
   getTasks();
   // Setup click listeners
   setupClickListeners();
 }
 
-let showAddTaskCard = false;
-// Use this variable to save request to DB - (Cancel button, etc)
+// Use to save network request to DB - (Cancel button, etc)
 let responses = [];
-
-// Add button component
-let addTaskCard = `
-<div class="card" style="width: 18rem;">
-  <div class="card-body card-body--add">
-    <i class="fas fa-plus-circle"></i>
-    <p class="task__add-text">Add Task</p>
-  </div>
-</div>`;
-
-  // New Task input component
-  let newTaskInput = `
-  <div class="card" style="width: 18rem; z-index: 155;">
-    <div class="card-body">
-      <h5 class="card-title">Add New Task</h5>
-      <input class="form-control task__title" type="text" maxlength="50" placeholder="Task title">
-      <textarea class="form-control task__detail" class="card-text" maxlength="200" type="text" placeholder="Task Detail"></textarea>
-      <a href="#" id="btn--cancel" class="btn btn-danger">Cancel</a>
-      <a href="#" id="btn--save" class="btn btn-success">Save Task</a>
-    </div>
-  </div>`;
 
 function appendToDom(response) {
   // Loop through DB - filter incomplete tasks to be on top
@@ -61,33 +39,72 @@ function createTask() {
   modalAdd.addClass('modalAdd--is-visible');
 }
 
+////////////// COMPONENTS ////////////////////////////
+
+// Add button component - (with + icon)
+let addTaskCard = `
+<div class="card" style="width: 18rem;">
+  <div class="card-body card-body--add">
+    <i class="fas fa-plus-circle"></i>
+    <p class="task__add-text">Add Task</p>
+  </div>
+</div>`;
+
+// New Task input component - Input fields
+let newTaskInput = `
+  <div class="card" style="width: 18rem; z-index: 155;">
+    <div class="card-body">
+      <h5 class="card-title">Add New Task</h5>
+      <input class="form-control task__title" type="text" maxlength="20" placeholder="Task title">
+      <textarea class="form-control task__detail" class="card-text" maxlength="100" type="text" placeholder="Task Detail"></textarea>
+      <a href="#" id="btn--cancel" class="btn btn-danger">Cancel</a>
+      <a href="#" id="btn--save" class="btn btn-success">Save Task</a>
+    </div>
+  </div>`;
+
+// Component for Task card - With DB data
+function taskCard(task) {
+  // If task complete -- add checked box, else unchecked box
+  let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
+  // If task complete -- change styles (strike-through, light colored text)
+  let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
+  // Append task to the container
+  $('#card__container').append(
+    `<div class="card" style="width: 18rem;">
+    <div class="card-body">
+      ${square}
+      ${title}
+      <p class="card-text">${task.task_detail}</p>
+      <a href="#" class="btn btn-danger">Delete</a>
+      <a href="#" class="btn btn-success">Complete</a>
+    </div>
+  </div>`);
+}
+
 function getTasks() {
   $.ajax({
     method: 'GET',
     url: '/tasks'
-  }).then(function(response) {
+  }).then(function (response) {
     console.log('back from GET', response);
     responses = response;
     appendToDom(response);
-  }).catch(function(err) {
+  }).catch(function (err) {
     console.log('error from GET', err);
   });
 }
 
 function handleCancelClick() {
-  let modalAdd = $('.modalAdd');
-  $('#card__container').empty();
-  // Remove modal styling
-  modalAdd.removeClass('modalAdd--is-visible');
-  // Show Add Task button
-  $('#card__container').prepend(addTaskCard);
+  resetUI();
   // Get tasks
   appendToDom(responses);   // Does not use getTasks method, saves extra network request to DB 
 }
 
 function handleSaveClick() {
+  // console.log('check validation: ', validateTaskInputs());
   // If inputs are not empty
-  if(validateTaskInputs) {
+  if (validateTaskInputs() === true) {
+    // Create a new Class object
     let newTask = new Task($('.task__title').val(), $('.task__detail').val());
     saveNewTask(newTask);
   }
@@ -97,18 +114,29 @@ function loadAddTask() {
   $('#card__container').prepend(addTaskCard);
 }
 
+function resetUI() {
+  let modalAdd = $('.modalAdd');
+  $('#card__container').empty();
+  // Remove modal styling
+  modalAdd.removeClass('modalAdd--is-visible');
+  // Show Add Task button
+  $('#card__container').prepend(addTaskCard);
+}
+
 function saveNewTask(newTaskObject) {
   $.ajax({
     method: 'POST',
     url: '/tasks',
     data: newTaskObject
-  }).then(function(response) {
-    console.log('response from POST');
+  }).then(function (response) {
+    console.log('response from POST', response);
     // Clear input values
     clearInputValues();
+    // Reset Modal and UI
+    resetUI();
     // Get tasks from DB
-    getTasks(); 
-  }).catch(function(err) {
+    getTasks();
+  }).catch(function (err) {
     console.log('error in POST', err);
   });
 }
@@ -126,30 +154,25 @@ class Task {
   }
 }
 
-function taskCard(task) {
-  // If task complete -- add checked box, else unchecked box
-  let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
-  // If task complete -- change styles (strike-through, light colored text)
-  let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
-  // Append task to the container
-  $('#card__container').append(
-  `<div class="card" style="width: 18rem;">
-  <div class="card-body">
-    ${square}
-    ${title}
-    <p class="card-text">${task.task_detail}</p>
-    <a href="#" class="btn btn-danger">Delete</a>
-    <a href="#" class="btn btn-success">Complete</a>
-  </div>
-</div>`);
-}
-
 function validateTaskInputs() {
-  let $title = $('.task__title').val();
-  let $detail = $('.task__detail').val();
-  if($title === '' || $detail === '') {
-    return false;
+  // Validate input values
+  let $title = $('.task__title');
+  let $detail = $('.task__detail');
+  if($title.val() === '') {
+    $title.addClass('is-invalid');
   } else {
+    $title.removeClass('is-invalid');
+    $title.addClass('is-valid');
+  }
+  
+  if ($detail.val() === '') {
+    $detail.addClass('is-invalid');
+  } else {
+    $detail.removeClass('is-invalid');
+    $detail.addClass('is-valid');
+  }
+
+  if($title.val() !== '' && $detail.val() !== '') {
     return true;
   }
 }
