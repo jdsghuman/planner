@@ -68,6 +68,7 @@ function taskCard(task) {
   let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
   // If task complete -- change styles (strike-through, light colored text)
   let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
+  let button = task.completed ? `<a href="#" class="btn btn-info disabled">Complete</a>` : `<a href="#" class="btn btn-info">Complete</a>`;
   // Append task to the container
   $('#card__container').append(
     `<div class="card" style="width: 18rem;">
@@ -76,7 +77,7 @@ function taskCard(task) {
       ${title}
       <p class="card-text">${task.task_detail}</p>
       <a href="#" class="btn btn-danger">Delete</a>
-      <a href="#" class="btn btn-success">Complete</a>
+      ${button}
     </div>
   </div>`);
 }
@@ -102,10 +103,11 @@ function handleCancelClick() {
 
 function handleSaveClick() {
   // console.log('check validation: ', validateTaskInputs());
-  // If inputs are not empty
+  // Check if inputs are empty
   if (validateTaskInputs() === true) {
     // Create a new Class object
     let newTask = new Task($('.task__title').val(), $('.task__detail').val());
+    // Save task to DB
     saveNewTask(newTask);
   }
 }
