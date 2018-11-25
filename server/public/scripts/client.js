@@ -179,9 +179,12 @@ function saveNewTask(newTaskObject) {
     resetUI();
     // Get tasks from DB
     getTasks();
-    alert('New task added!');
+    if(response === 'Created') alert('New task added!');
   }).catch(function (err) {
     console.log('error in POST', err);
+    if(err) alert('Error! Task not saved.');
+    // Remove 'New Task' component
+    handleCancelClick();
   });
 }
 
