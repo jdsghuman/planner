@@ -12,12 +12,20 @@ function readyNow() {
 // Use [] to save network request to DB - (Cancel button)
 let responses = [];
 
-function appendToDom(response) {
+function appendToDom(response, reverse) {
   // Loop through DB - filter incomplete tasks to be on top
-  response.reverse().filter(t => t.completed == false).forEach(task => {
-    // Send filtered response to task card component
-    taskCard(task);
-  })
+  if(reverse === 'reverse') {
+    response.reverse().filter(t => t.completed == false).forEach(task => {
+      // Send filtered response to task card component
+      taskCard(task);
+    });
+  } else {
+    response.filter(t => t.completed == false).forEach(task => {
+      // Send filtered response to task card component
+      taskCard(task);
+    });
+  }
+  
   // Loop through DB - filter completed tasks
   response.filter(t => t.completed == true).forEach(task => {
     // Send filtered response to task card component
@@ -97,7 +105,7 @@ function getTasks() {
   }).then(function (response) {
     console.log('back from GET', response);
     responses = response;
-    appendToDom(response);
+    appendToDom(response, "reverse");
   }).catch(function (err) {
     console.log('error from GET', err);
   });
