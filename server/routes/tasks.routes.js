@@ -9,9 +9,9 @@ const config = {
   database: 'weekend-to-do-app', // name of database
   host: 'localhost',
   port: 5432,
-  max: 10, 
+  max: 10,
   idleTimeoutMillis: 10000 // connection timeout
-} 
+}
 
 const pool = new Pool(config);
 
@@ -24,17 +24,17 @@ pool.on('error', (error) => {
 });
 
 router.put('/:id', (req, res) => {
-    let id = req.params.id;
-    let taskCompleted = req.body.completed;
-    // UPDATE DB query
-    let queryText = (`UPDATE "todolist" SET "completed"=$1 WHERE id = $2`);
-    pool.query(queryText, [taskCompleted, id])
-      .then((results) => {
-        res.sendStatus(200);
-      }).catch((err) => {
-        console.log(err);
-        res.sendStatus(500);
-      });
+  let id = req.params.id;
+  let taskCompleted = req.body.completed;
+  // UPDATE DB query
+  let queryText = (`UPDATE "todolist" SET "completed"=$1 WHERE id = $2`);
+  pool.query(queryText, [taskCompleted, id])
+    .then((results) => {
+      res.sendStatus(200);
+    }).catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
 router.delete('/:id', (req, res) => {

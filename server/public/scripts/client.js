@@ -14,7 +14,7 @@ let responses = [];
 
 function appendToDom(response, reverse) {
   // Loop through DB - filter INCOMPLETE tasks to be on top
-  if(reverse === 'reverse') {
+  if (reverse === 'reverse') {
     // Reverse array to show newest added/updated tasks above
     response.reverse().filter(t => t.completed == false).forEach(task => {
       // Send filtered response to task card component
@@ -27,7 +27,7 @@ function appendToDom(response, reverse) {
       taskCard(task);
     });
   }
-  
+
   // Loop through DB - filter COMPLETED tasks
   response.filter(t => t.completed == true).forEach(task => {
     // Send filtered response to task card component
@@ -84,7 +84,7 @@ function taskCard(task) {
   let buttonComplete = task.completed ? `<a href="#" class="btn btn-info disabled btn--complete">Complete</a>` : `<a href="#" class="btn btn-info btn--complete">Complete</a>`;
   // If task complete - apply background-color 
   let cardDiv = task.completed ? `<div class="card" style="width: 18rem; background-color: #e9ecef;">` : `<div class="card" style="width: 18rem;">`;
- 
+
   // Append task to the container
   $('#card__container').append(`
     ${cardDiv}
@@ -120,7 +120,7 @@ function getTaskDataCompleted(that) {
 
 function getTaskDataId(that) {
   // Get data-id of task
-  return that.parent().parent().data('id'); 
+  return that.parent().parent().data('id');
 }
 
 function handleCancelClick() {
@@ -140,7 +140,7 @@ function handleDeleteClick(e) {
   // Prompt user to confirm delete
   let deleteConfirm = confirm("Are you sure you want to delete this task?");
   // If user confirms delete
-  if(deleteConfirm === true) {
+  if (deleteConfirm === true) {
     // Call DELETE route - Use getTaskDataId to get data-id
     taskDelete(getTaskDataId($(this)));
   }
@@ -182,10 +182,10 @@ function saveNewTask(newTaskObject) {
     // Get tasks from DB
     getTasks();
     // Alert user if task added to DB
-    if(response === 'Created') alert('New task added!');
+    if (response === 'Created') alert('New task added!');
   }).catch(function (err) {
     // Alert user if error
-    if(err) alert('Error! Task not saved.');
+    if (err) alert('Error! Task not saved.');
     // Remove 'New Task' component
     handleCancelClick();
   });
@@ -214,37 +214,37 @@ function taskDelete(taskId) {
   $.ajax({
     method: 'DELETE',
     url: `/tasks/${taskId}`
-  }).then(function(response) {
+  }).then(function (response) {
     // Reset Modal and UI
     resetUI();
     // Update dom
     getTasks();
     // Alert user if task deleted successfully 
     alert('Task deleted!');
-  }).catch(function(err) {
+  }).catch(function (err) {
     // Alert user if error
-    if(err) alert('Error! Task not deleted.');
+    if (err) alert('Error! Task not deleted.');
   });
 }
 
 function taskUpdateComplete(taskId, taskCompleted) {
   // Set '!complete' as reversed data
   let tComplete = !taskCompleted;
-  const updateTask = {completed: tComplete}
+  const updateTask = { completed: tComplete }
   $.ajax({
     method: 'PUT',
     url: `/tasks/${taskId}`,
     data: updateTask
-  }).then(function(response) {
+  }).then(function (response) {
     // Reset Modal and UI
     resetUI();
     // Update dom
     getTasks();
     // Alert user if task updated successfully
     alert('Task updated!');
-  }).catch(function(err) {
+  }).catch(function (err) {
     // Alert user if error
-    if(err) alert('Error! Task not updated.');
+    if (err) alert('Error! Task not updated.');
   });
 }
 
@@ -252,13 +252,13 @@ function validateTaskInputs() {
   // Input validation styling for Bootstrap (red/green borders)
   let $title = $('.task__title');
   let $detail = $('.task__detail');
-  if($title.val() === '') {
+  if ($title.val() === '') {
     $title.addClass('is-invalid');
   } else {
     $title.removeClass('is-invalid');
     $title.addClass('is-valid');
   }
-  
+
   if ($detail.val() === '') {
     $detail.addClass('is-invalid');
   } else {
@@ -267,9 +267,8 @@ function validateTaskInputs() {
   }
 
   // Validate input values - User cannot send empty values
-  if(($title.val() !== '' && $detail.val() !=='') && 
-      ($title.val().trim() !== '' && $detail.val().trim !== '') && 
-      ($detail.val().trim() !== '' && $title.val().trim() !== '')) {
+  if (($title.val() !== '' && $detail.val() !== '') &&
+    ($title.val().trim() !== '' && $detail.val().trim() !== '')) {
     return true;
   } else {
     alert('Error! Please provide a response for Task Title & Detail below.');
