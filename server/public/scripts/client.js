@@ -181,6 +181,8 @@ function setupClickListeners() {
   $('#card__container').on('click', '#btn--save', handleSaveClick);
   $('#card__container').on('click', '.btn--delete', handleDeleteClick);
   $('#card__container').on('click', '.btn--complete', handleCompleteClick);
+  $('#card__container').on('click', '.fa-square', handleCompleteClick);
+  $('#card__container').on('click', '.fa-check-square', handleCompleteClick);
 }
 
 class Task {
@@ -205,7 +207,8 @@ function taskDelete(taskId) {
 }
 
 function taskUpdateComplete(taskId, taskCompleted) {
-  const updateTask = {completed: taskCompleted}
+  let tComplete = !taskCompleted;
+  const updateTask = {completed: tComplete}
   $.ajax({
     method: 'PUT',
     url: `/tasks/${taskId}`,
@@ -215,7 +218,7 @@ function taskUpdateComplete(taskId, taskCompleted) {
     resetUI();
     // Update dom
     getTasks();
-    alert('Task completed!');
+    alert('Task updated!');
   }).catch(function(err) {
     console.log('error updating Complete task: ', err);
   });

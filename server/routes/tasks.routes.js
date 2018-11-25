@@ -25,20 +25,11 @@ pool.on('error', (error) => {
 
 router.put('/:id', (req, res) => {
     let id = req.params.id;
-    console.log('Put route id: ', id);
-    let taskCompleted = false;
-    if(typeof req.body.completed == true) {
-      taskCompleted = false;
-    } else {
-      taskCompleted = true;
-    }
-    console.log('Put route completed: ', taskCompleted);
-
+    let taskCompleted = req.body.completed;
+    // UPDATE query
     let queryText = (`UPDATE "todolist" SET "completed"=$1 WHERE id = $2`);
-
     pool.query(queryText, [taskCompleted, id])
       .then((results) => {
-        console.log('put route ', results);
         res.sendStatus(200);
       }).catch((err) => {
         console.log(err);
@@ -48,7 +39,7 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
-  console.log('id in server delete route: ', id);
+  // Delete DB tables query
   const queryText = `DELETE FROM "todolist" WHERE id = $1;`;
   pool.query(queryText, [id])
     .then((response) => {
@@ -60,6 +51,7 @@ router.delete('/:id', (req, res) => {
 
 router.get('/', (req, res) => {
   console.log('in GET route');
+  // Get DB query
   const queryText = `SELECT * FROM "todolist";`;
   pool.query(queryText).then((results) => {
     console.log('in GET route', results.rows);
@@ -71,9 +63,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  console.log('in POST route');
   const newTask = req.body;
-  console.log('new Task in route: ', newTask);
+  // POST query
   const queryText = `INSERT INTO "todolist" ("task_title", "task_detail") VALUES($1, $2);`;
   pool.query(queryText, [req.body.taskTitle, req.body.taskDetail])
     .then(() => {
