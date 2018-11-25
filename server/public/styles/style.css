@@ -47,7 +47,31 @@
   }
 }
 
+.card__task-container {
+  padding-top: 18px;
+}
+
+.card__task-container--new {
+  padding-top: 35px;
+}
+
+.btn--complete,
+#btn--save {
+  position: absolute;
+  bottom: 5px;
+  right: 12px;
+}
+
+.btn--delete,
+#btn--cancel {
+  position: absolute;
+  bottom: 5px;
+  left: 12px;
+}
+
 /* ADD TASK CARD */
+
+/* ICON STYLES */
 i {
   cursor: pointer;
 }

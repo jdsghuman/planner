@@ -26,7 +26,7 @@ pool.on('error', (error) => {
 router.put('/:id', (req, res) => {
     let id = req.params.id;
     let taskCompleted = req.body.completed;
-    // UPDATE query
+    // UPDATE DB query
     let queryText = (`UPDATE "todolist" SET "completed"=$1 WHERE id = $2`);
     pool.query(queryText, [taskCompleted, id])
       .then((results) => {
@@ -64,7 +64,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const newTask = req.body;
-  // POST query
+  // POST DB query
   const queryText = `INSERT INTO "todolist" ("task_title", "task_detail") VALUES($1, $2);`;
   pool.query(queryText, [req.body.taskTitle, req.body.taskDetail])
     .then(() => {

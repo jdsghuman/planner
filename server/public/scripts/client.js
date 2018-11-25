@@ -9,7 +9,7 @@ function readyNow() {
   setupClickListeners();
 }
 
-// Use to save network request to DB - (Cancel button, etc)
+// Use [] to save network request to DB - (Cancel button)
 let responses = [];
 
 function appendToDom(response) {
@@ -57,15 +57,17 @@ let newTaskInput = `
       <h5 class="card-title">Add New Task</h5>
       <input class="form-control task__title" type="text" maxlength="20" placeholder="Task title">
       <textarea class="form-control task__detail" class="card-text" maxlength="100" type="text" placeholder="Task Detail"></textarea>
-      <a href="#" id="btn--cancel" class="btn btn-danger">Cancel</a>
-      <a href="#" id="btn--save" class="btn btn-success">Save Task</a>
+      <div class="card__task-container--new">
+        <a href="#" id="btn--cancel" class="btn btn-danger">Cancel</a>
+        <a href="#" id="btn--save" class="btn btn-success">Save Task</a>
+      </div>
     </div>
   </div>`;
 
 // Component for Task card - With DB data
 function taskCard(task) {
   // If task complete - add checked box, else unchecked box
-  let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
+  let square = task.completed ? `<span><i class="far fa-check-square"></i></span>` : `<span><i class="far fa-square"></i></span>`;
   // If task complete - change styles (strike-through, light colored text)
   let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
   // If task complete - disable 'Complete' button
@@ -80,8 +82,10 @@ function taskCard(task) {
       ${square}
       ${title}
       <p class="card-text">${task.task_detail}</p>
-      <a href="#" class="btn btn-danger btn--delete">Delete</a>
-      ${buttonComplete}
+      <div class="card__task-container">
+        <a href="#" class="btn btn-danger btn--delete">Delete</a>
+        ${buttonComplete}
+      </div>
     </div>
   </div>`);
 }
@@ -101,11 +105,11 @@ function getTasks() {
 
 function getTaskId(that) {
   // Get dataId of Card
-  return that.parent().data('id'); 
+  return that.parent().parent().data('id'); 
 }
 
 function getTaskCompleted(that) {
-  return that.parent().data('complete');
+  return that.parent().parent().data('complete');
 }
 
 function handleCancelClick() {
@@ -122,7 +126,6 @@ function handleCompleteClick(e) {
 
 function handleDeleteClick(e) {
   e.preventDefault(e);
-  console.log('delete clicked');
   // Prompt user to confirm delete
   let deleteConfirm = confirm("Are you sure you want to delete this task?");
   // If user confirms delete
@@ -133,12 +136,11 @@ function handleDeleteClick(e) {
 }
 
 function handleSaveClick() {
-  // console.log('check validation: ', validateTaskInputs());
   // Check if inputs are empty
   if (validateTaskInputs() === true) {
     // Create a new Class object
     let newTask = new Task($('.task__title').val(), $('.task__detail').val());
-    // Save task to DB
+    // Call POST route and send task to DB
     saveNewTask(newTask);
   }
 }
@@ -202,7 +204,7 @@ function taskDelete(taskId) {
     resetUI();
     // Update dom
     getTasks();
-    alert('Task deleted');
+    alert('Task deleted!');
   });
 }
 
@@ -225,7 +227,7 @@ function taskUpdateComplete(taskId, taskCompleted) {
 }
 
 function validateTaskInputs() {
-  // Validate input values
+  // Input validation styling
   let $title = $('.task__title');
   let $detail = $('.task__detail');
   if($title.val() === '') {
@@ -242,6 +244,7 @@ function validateTaskInputs() {
     $detail.addClass('is-valid');
   }
 
+  // Validate input values
   if($title.val() !== '' && $detail.val() !== '') {
     return true;
   }
