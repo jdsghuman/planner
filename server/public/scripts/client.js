@@ -77,7 +77,7 @@ function taskCard(task) {
   // If task complete - add checked box, else unchecked box
   let square = task.completed ? `<span><i class="far fa-check-square"></i></span>` : `<span><i class="far fa-square"></i></span>`;
   // If task complete - change styles (strike-through, light colored text)
-  let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
+  let title = task.completed ? `<span><h5 class="card-title card-title--completed">${task.task_title}</h5></span>` : `<span><h5 class="card-title card-title--incomplete">${task.task_title}</h5></span>`;
   // If task complete - disable 'Complete' button
   let buttonComplete = task.completed ? `<a href="#" class="btn btn-info disabled btn--complete">Complete</a>` : `<a href="#" class="btn btn-info btn--complete">Complete</a>`;
   // If task complete - apply background-color 
@@ -196,6 +196,8 @@ function setupClickListeners() {
   $('#card__container').on('click', '.btn--complete', handleCompleteClick);
   $('#card__container').on('click', '.fa-square', handleCompleteClick);
   $('#card__container').on('click', '.fa-check-square', handleCompleteClick);
+  $('#card__container').on('click', '.card-title--completed', handleCompleteClick);
+  $('#card__container').on('click', '.card-title--incomplete', handleCompleteClick);
 }
 
 class Task {
