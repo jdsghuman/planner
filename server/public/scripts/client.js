@@ -13,20 +13,22 @@ function readyNow() {
 let responses = [];
 
 function appendToDom(response, reverse) {
-  // Loop through DB - filter incomplete tasks to be on top
+  // Loop through DB - filter INCOMPLETE tasks to be on top
   if(reverse === 'reverse') {
+    // Reverse array to show newest added/updated tasks above
     response.reverse().filter(t => t.completed == false).forEach(task => {
       // Send filtered response to task card component
       taskCard(task);
     });
   } else {
+    // Use for 'responses' array -- saved as reversed
     response.filter(t => t.completed == false).forEach(task => {
       // Send filtered response to task card component
       taskCard(task);
     });
   }
   
-  // Loop through DB - filter completed tasks
+  // Loop through DB - filter COMPLETED tasks
   response.filter(t => t.completed == true).forEach(task => {
     // Send filtered response to task card component
     taskCard(task);
@@ -72,7 +74,7 @@ let newTaskInput = `
     </div>
   </div>`;
 
-// Component for Task card - With DB data
+// Component for Task card - With DB data (add spans for data traversing consistency)
 function taskCard(task) {
   // If task complete - add checked box, else unchecked box
   let square = task.completed ? `<span><i class="far fa-check-square"></i></span>` : `<span><i class="far fa-square"></i></span>`;
@@ -103,33 +105,34 @@ function getTasks() {
     method: 'GET',
     url: '/tasks'
   }).then(function (response) {
-    console.log('back from GET', response);
     responses = response;
     appendToDom(response, "reverse");
   }).catch(function (err) {
-    console.log('error from GET', err);
+    // Alert user if error from GET
+    if (err) alert('Error! Tasks not uploading.');
   });
 }
 
-function getTaskId(that) {
-  // Get dataId of Card
-  return that.parent().parent().data('id'); 
+function getTaskDataCompleted(that) {
+  // Get data-complete of task
+  return that.parent().parent().data('complete');
 }
 
-function getTaskCompleted(that) {
-  return that.parent().parent().data('complete');
+function getTaskDataId(that) {
+  // Get data-id of task
+  return that.parent().parent().data('id'); 
 }
 
 function handleCancelClick() {
   resetUI();
-  // Get tasks
+  // Get tasks (cached responses array)
   appendToDom(responses);   // Does not use getTasks method, saves extra network request to DB 
 }
 
 function handleCompleteClick(e) {
   e.preventDefault();
-  // Call UPDATE route - Use getTaskId to get dataId
-  taskUpdateComplete(getTaskId($(this)), getTaskCompleted($(this)));
+  // Call UPDATE route - Use getTaskDataId to get data-id
+  taskUpdateComplete(getTaskDataId($(this)), getTaskDataCompleted($(this)));
 }
 
 function handleDeleteClick(e) {
@@ -138,8 +141,8 @@ function handleDeleteClick(e) {
   let deleteConfirm = confirm("Are you sure you want to delete this task?");
   // If user confirms delete
   if(deleteConfirm === true) {
-    // Call DELETE route - Use getTaskId to get dataId
-    taskDelete(getTaskId($(this)));
+    // Call DELETE route - Use getTaskDataId to get data-id
+    taskDelete(getTaskDataId($(this)));
   }
 }
 
@@ -148,7 +151,7 @@ function handleSaveClick() {
   if (validateTaskInputs() === true) {
     // Create a new Class object
     let newTask = new Task($('.task__title').val(), $('.task__detail').val());
-    // Call POST route and send task to DB
+    // Call POST route and send newTask variable to DB
     saveNewTask(newTask);
   }
 }
@@ -172,16 +175,16 @@ function saveNewTask(newTaskObject) {
     url: '/tasks',
     data: newTaskObject
   }).then(function (response) {
-    console.log('response from POST', response);
     // Clear input values
     clearInputValues();
     // Reset Modal and UI
     resetUI();
     // Get tasks from DB
     getTasks();
+    // Alert user if task added to DB
     if(response === 'Created') alert('New task added!');
   }).catch(function (err) {
-    console.log('error in POST', err);
+    // Alert user if error
     if(err) alert('Error! Task not saved.');
     // Remove 'New Task' component
     handleCancelClick();
@@ -208,7 +211,6 @@ class Task {
 }
 
 function taskDelete(taskId) {
-  console.log('task data: ', taskId);
   $.ajax({
     method: 'DELETE',
     url: `/tasks/${taskId}`
@@ -217,11 +219,16 @@ function taskDelete(taskId) {
     resetUI();
     // Update dom
     getTasks();
+    // Alert user if task deleted successfully 
     alert('Task deleted!');
+  }).catch(function(err) {
+    // Alert user if error
+    if(err) alert('Error! Task not deleted.');
   });
 }
 
 function taskUpdateComplete(taskId, taskCompleted) {
+  // Set '!complete' as reversed data
   let tComplete = !taskCompleted;
   const updateTask = {completed: tComplete}
   $.ajax({
@@ -233,14 +240,16 @@ function taskUpdateComplete(taskId, taskCompleted) {
     resetUI();
     // Update dom
     getTasks();
+    // Alert user if task updated successfully
     alert('Task updated!');
   }).catch(function(err) {
-    console.log('error updating Complete task: ', err);
+    // Alert user if error
+    if(err) alert('Error! Task not updated.');
   });
 }
 
 function validateTaskInputs() {
-  // Input validation styling
+  // Input validation styling for Bootstrap (red/green borders)
   let $title = $('.task__title');
   let $detail = $('.task__detail');
   if($title.val() === '') {
@@ -257,8 +266,12 @@ function validateTaskInputs() {
     $detail.addClass('is-valid');
   }
 
-  // Validate input values
-  if($title.val() !== '' && $detail.val() !== '') {
+  // Validate input values - User cannot send empty values
+  if(($title.val() !== '' && $detail.val() !=='') && 
+      ($title.val().trim() !== '' && $detail.val().trim !== '') && 
+      ($detail.val().trim() !== '' && $title.val().trim() !== '')) {
     return true;
+  } else {
+    alert('Error! Please provide a response for Task Title & Detail below.');
   }
 }
