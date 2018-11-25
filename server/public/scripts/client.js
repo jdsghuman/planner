@@ -64,15 +64,19 @@ let newTaskInput = `
 
 // Component for Task card - With DB data
 function taskCard(task) {
-  // If task complete -- add checked box, else unchecked box
+  // If task complete - add checked box, else unchecked box
   let square = task.completed ? `<i class="far fa-check-square"></i>` : `<i class="far fa-square"></i>`;
-  // If task complete -- change styles (strike-through, light colored text)
+  // If task complete - change styles (strike-through, light colored text)
   let title = task.completed ? `<h5 class="card-title card-title--completed">${task.task_title}</h5>` : `<h5 class="card-title">${task.task_title}</h5>`;
+  // If task complete - disable 'Complete' button
   let buttonComplete = task.completed ? `<a href="#" class="btn btn-info disabled btn--complete">Complete</a>` : `<a href="#" class="btn btn-info btn--complete">Complete</a>`;
+  // If task complete - apply background-color 
+  let cardDiv = task.completed ? `<div class="card" style="width: 18rem; background-color: #e9ecef;">` : `<div class="card" style="width: 18rem;">`;
+ 
   // Append task to the container
-  $('#card__container').append(
-    `<div class="card" style="width: 18rem;">
-    <div class="card-body" data-id=${task.id}>
+  $('#card__container').append(`
+    ${cardDiv}
+    <div class="card-body" data-id=${task.id} data-complete=${task.completed}>
       ${square}
       ${title}
       <p class="card-text">${task.task_detail}</p>
@@ -80,19 +84,6 @@ function taskCard(task) {
       ${buttonComplete}
     </div>
   </div>`);
-}
-
-function deleteTask(taskId) {
-  console.log('task data: ', taskId);
-  $.ajax({
-    method: 'DELETE',
-    url: `/tasks/${taskId}`
-  }).then(function(response) {
-    // Reset Modal and UI
-    resetUI();
-    // Update dom
-    getTasks();
-  });
 }
 
 function getTasks() {
@@ -108,21 +99,36 @@ function getTasks() {
   });
 }
 
+function getTaskId(that) {
+  // Get dataId of Card
+  return that.parent().data('id'); 
+}
+
+function getTaskCompleted(that) {
+  return that.parent().data('complete');
+}
+
 function handleCancelClick() {
   resetUI();
   // Get tasks
   appendToDom(responses);   // Does not use getTasks method, saves extra network request to DB 
 }
 
-function handleDeleteClick() {
+function handleCompleteClick(e) {
+  e.preventDefault();
+  // Call UPDATE route - Use getTaskId to get dataId
+  taskUpdateComplete(getTaskId($(this)), getTaskCompleted($(this)));
+}
+
+function handleDeleteClick(e) {
+  e.preventDefault(e);
   console.log('delete clicked');
-  // Get data-id of task
-  let taskId = $(this).parent().data('id');
   // Prompt user to confirm delete
   let deleteConfirm = confirm("Are you sure you want to delete this task?");
   // If user confirms delete
   if(deleteConfirm === true) {
-    deleteTask(taskId);
+    // Call DELETE route - Use getTaskId to get dataId
+    taskDelete(getTaskId($(this)));
   }
 }
 
@@ -163,6 +169,7 @@ function saveNewTask(newTaskObject) {
     resetUI();
     // Get tasks from DB
     getTasks();
+    alert('New task added!');
   }).catch(function (err) {
     console.log('error in POST', err);
   });
@@ -173,6 +180,7 @@ function setupClickListeners() {
   $('#card__container').on('click', '#btn--cancel', handleCancelClick);
   $('#card__container').on('click', '#btn--save', handleSaveClick);
   $('#card__container').on('click', '.btn--delete', handleDeleteClick);
+  $('#card__container').on('click', '.btn--complete', handleCompleteClick);
 }
 
 class Task {
@@ -180,6 +188,37 @@ class Task {
     this.taskTitle = taskTitle;
     this.taskDetail = taskDetail;
   }
+}
+
+function taskDelete(taskId) {
+  console.log('task data: ', taskId);
+  $.ajax({
+    method: 'DELETE',
+    url: `/tasks/${taskId}`
+  }).then(function(response) {
+    // Reset Modal and UI
+    resetUI();
+    // Update dom
+    getTasks();
+    alert('Task deleted');
+  });
+}
+
+function taskUpdateComplete(taskId, taskCompleted) {
+  const updateTask = {completed: taskCompleted}
+  $.ajax({
+    method: 'PUT',
+    url: `/tasks/${taskId}`,
+    data: updateTask
+  }).then(function(response) {
+    // Reset Modal and UI
+    resetUI();
+    // Update dom
+    getTasks();
+    alert('Task completed!');
+  }).catch(function(err) {
+    console.log('error updating Complete task: ', err);
+  });
 }
 
 function validateTaskInputs() {
