@@ -29,6 +29,10 @@
   display: inline-block;
 }
 
+.card-title:hover {
+  color: #888888;
+}
+
 .card-title--completed {
   text-decoration: line-through;
   color: #888888;
