@@ -9,7 +9,7 @@ function readyNow() {
   setupClickListeners();
 }
 
-// Use [] to save network request to DB - (Cancel button)
+// Use [] to save network request to DB - (e.g. used for the 'Cancel' button in Add new task)
 let responses = [];
 
 function appendToDom(response, reverse) {
@@ -136,7 +136,7 @@ function handleCompleteClick(e) {
 }
 
 function handleDeleteClick(e) {
-  e.preventDefault(e);
+  e.preventDefault();
   // Prompt user to confirm delete
   let deleteConfirm = confirm("Are you sure you want to delete this task?");
   // If user confirms delete
