@@ -20,11 +20,11 @@ Steps to get the development environment running.
 
 
 ### Screenshots
-![Desktop](/server/public/images/desktop.jpg?raw=true "Desktop")
+![Desktop](/server/public/images/desktop.png?raw=true "Desktop")
 
-![Tablet](/server/public/images/tablet.jpg?raw=true "Tablet")
+![Tablet](/server/public/images/tablet.png?raw=true "Tablet")
 
-![Mobile](/server/public/images/mobile.jpg?raw=true "Mobile")
+![Mobile](/server/public/images/mobile.pngraw=true "Mobile")
 
 ### Completed Features
 
