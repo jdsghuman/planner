@@ -24,7 +24,7 @@ Steps to get the development environment running.
 
 ![Tablet](/server/public/images/tablet.png?raw=true "Tablet")
 
-![Mobile](/server/public/images/mobile.pngraw=true "Mobile")
+![Mobile](/server/public/images/mobile.png?raw=true "Mobile")
 
 ### Completed Features
 
