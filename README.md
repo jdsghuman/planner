@@ -1,4 +1,4 @@
-# ToDo List 
+# Planner
 Todo list is an application that allows you to add, delete, and complete tasks. The live site is at https://thawing-ridge-92038.herokuapp.com/
 
 ## Built With
