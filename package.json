@@ -1,7 +1,7 @@
 {
-  "name": "vega-todo-app-weekend3",
+  "name": "planner",
   "version": "1.0.0",
-  "description": "Hello Primers!",
+  "description": "Planning app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
